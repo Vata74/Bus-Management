@@ -1,6 +1,6 @@
 package entidades;
 
-class Colectivo {
+public class Colectivo {
     private int kilometraje;
     private int cantidadPasajeros;
     private String modelo;
@@ -46,6 +46,25 @@ class Colectivo {
 
     public void setPatente(String patente) {
         this.patente = patente;
+    }
+    
+    public Colectivo validar(String modelo, String patente, String cantidadPasajeros, String patenteVal){
+        try {
+            this.kilometraje = 0;
+            this.cantidadPasajeros = Integer.valueOf(cantidadPasajeros);
+            this.modelo = modelo;
+            if(patenteVal != null){
+                if(!patenteVal.equalsIgnoreCase(patente)){
+                    this.patente = patente;
+                }
+            }else{
+                this.patente = patente;
+            }
+            return this;
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
+        }
     }
 
     @Override

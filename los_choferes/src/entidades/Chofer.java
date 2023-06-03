@@ -1,6 +1,7 @@
 package entidades;
 
 public class Chofer {
+
     private int nroSocio;
     private String nombre;
     private String apellido;
@@ -46,6 +47,23 @@ public class Chofer {
 
     public void setColectivo(Colectivo colectivo) {
         this.colectivo = colectivo;
+    }
+
+    public Chofer validar(String nroSocio, String nombre, String apellido, Integer nroSocioVal) {
+        try {
+            if (nroSocioVal != null) {
+                if (Integer.parseInt(nroSocio) != nroSocioVal) {
+                    this.nroSocio = Integer.parseInt(nroSocio);
+                }else{
+                    this.nroSocio = Integer.parseInt(nroSocio);
+                }
+            }
+            this.nombre = nombre;
+            this.apellido = apellido;
+            return this;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override

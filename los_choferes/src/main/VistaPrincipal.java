@@ -4,12 +4,21 @@
  */
 package main;
 
+import entidades.Chofer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Image;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import vistas.ChoferForm;
+import vistas.ColectivoForm;
 import vistas.PanelChofer;
 import vistas.PanelColectivo;
 
@@ -28,13 +37,93 @@ public class VistaPrincipal extends javax.swing.JFrame {
     ImageIcon logoValidacion1;
     ImageIcon logoValidacion2;
 
+    String archivoColectivo = "persistencia/colectivos.csv";
+    String archivoChoferes = "persistencia/choferes.csv";
+
     public VistaPrincipal() {
         initComponents();
         mostrarInfoChofer();
         actualizarIconosMicros();
         actualizarIconosValidaciones(true, false);
-        
+        inicioPrimeraVez();
+
         this.setLocationRelativeTo(null);
+    }
+
+    public void inicioPrimeraVez() {
+        System.out.println(contarFilas(archivoColectivo));
+
+        if (contarFilas(archivoColectivo) < 2 && contarFilas(archivoChoferes) < 2) {
+            ChoferForm dialogChofer = new ChoferForm();
+            ColectivoForm dialogColectivo = new ColectivoForm();
+
+            Chofer chofer = dialogChofer.showDialog();
+            chofer.setColectivo(dialogColectivo.showDialog());
+            System.out.println(chofer.getColectivo());
+
+            Chofer chofer1 = dialogChofer.showDialog(chofer.getNroSocio());
+            chofer1.setColectivo(dialogColectivo.showDialog(chofer.getColectivo().getPatente()));
+            System.out.println(chofer1);
+
+            guardarDatos(chofer, chofer1);
+        }
+
+        if (contarFilas(archivoColectivo) != 2 && contarFilas(archivoChoferes) != 2) {
+            System.exit(0);
+        }
+    }
+
+    public void guardarDatos(Chofer chofer1, Chofer chofer2) {
+    ArrayList<String[]> choferesGuardar = new ArrayList<>();
+    ArrayList<String[]> colectivosGuardar = new ArrayList<>();
+
+    // Guardar choferes
+    String[] lineaChofer1 = {String.valueOf(chofer1.getNroSocio()), chofer1.getNombre(), chofer1.getApellido()};
+    String[] lineaChofer2 = {String.valueOf(chofer2.getNroSocio()), chofer2.getNombre(), chofer2.getApellido()};
+    choferesGuardar.add(lineaChofer1);
+    choferesGuardar.add(lineaChofer2);
+
+    // Guardar colectivos
+    String[] lineaColectivo1 = {String.valueOf(chofer1.getColectivo().getKilometraje()), String.valueOf(chofer1.getColectivo().getCantidadPasajeros()), chofer1.getColectivo().getModelo(), chofer1.getColectivo().getPatente()};
+    String[] lineaColectivo2 = {String.valueOf(chofer2.getColectivo().getKilometraje()), String.valueOf(chofer2.getColectivo().getCantidadPasajeros()), chofer2.getColectivo().getModelo(), chofer2.getColectivo().getPatente()};
+    colectivosGuardar.add(lineaColectivo1);
+    colectivosGuardar.add(lineaColectivo2);
+
+    guardarCSV(archivoColectivo, colectivosGuardar);
+    guardarCSV(archivoChoferes, choferesGuardar);
+}
+
+public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(rutaArchivo))) {
+        for (String[] fila : datos) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < fila.length; i++) {
+                sb.append(fila[i]);
+                if (i < fila.length - 1) {
+                    sb.append(",");
+                }
+            }
+            writer.write(sb.toString());
+            writer.newLine();
+        }
+        System.out.println("Archivo CSV guardado correctamente en: " + rutaArchivo);
+    } catch (IOException e) {
+        System.err.println("Error al guardar el archivo CSV: " + e.getMessage());
+    }
+}
+
+    private static int contarFilas(String filename) {
+        int rowCount = 0;
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            // Ignorar la primera línea que generalmente contiene los encabezados
+            String line = reader.readLine();
+            while ((line = reader.readLine()) != null) {
+                rowCount++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return rowCount;
     }
 
     public void actualizarIconosValidaciones(boolean validacion1, boolean validacion2) {
@@ -571,7 +660,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
 
     private void BtnSalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnSalirMouseClicked
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_BtnSalirMouseClicked
 
     private void BtnSalirMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnSalirMouseEntered
