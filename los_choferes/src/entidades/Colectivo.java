@@ -1,6 +1,5 @@
 package entidades;
 
-import java.util.Arrays;
 
 public class Colectivo {
     private int kilometraje;

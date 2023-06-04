@@ -34,6 +34,15 @@ public class PanelColectivo extends javax.swing.JPanel {
         TxtPatente.setText(colectivo.getPatente());
     }
 
+    public PanelColectivo(Colectivo colectivo, Color color) {
+        initComponents();
+        this.Fondo.setBackground(color);
+        this.colectivo = colectivo;
+        SpinnerCantPasajeros.setValue(colectivo.getCantidadPasajeros());
+        TxtModelo.setText(colectivo.getModelo());
+        TxtPatente.setText(colectivo.getPatente());
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

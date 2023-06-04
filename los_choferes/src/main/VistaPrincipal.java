@@ -9,7 +9,6 @@ import entidades.Colectivo;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Image;
-import java.awt.List;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -18,7 +17,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import vistas.ChoferForm;
 import vistas.ColectivoForm;
@@ -46,16 +47,16 @@ public class VistaPrincipal extends javax.swing.JFrame {
     public VistaPrincipal() {
         initComponents();
         inicioPrimeraVez();
-        
+
         ButtonGroupChofer.add(RadioButtonChofer1);
         ButtonGroupChofer.add(RadioButtonChofer2);
-        
+
         iniciarComponentes();
 
         this.setLocationRelativeTo(null);
     }
-    
-    public void iniciarComponentes(){
+
+    public void iniciarComponentes() {
         actualizarIconosMicros();
         BtnSelecChofer1.setText(getRow(archivoChoferes, 0).split(",")[1]);
         BtnSelecChofer2.setText(getRow(archivoChoferes, 1).split(",")[1]);
@@ -196,7 +197,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
         return row;
     }
 
-    public void actualizarIconosValidaciones(boolean validacion1, boolean validacion2) {
+    public void actualizarIconoValidacion1(boolean validacion1) {
         if (validacion1) {
             this.logoValidacion1 = new ImageIcon("imagenes/Ok.png");
         } else {
@@ -204,6 +205,10 @@ public class VistaPrincipal extends javax.swing.JFrame {
         }
         this.logoValidacion1 = new ImageIcon(this.logoValidacion1.getImage().getScaledInstance(LogoValidacion1.getWidth(), LogoValidacion1.getHeight(), Image.SCALE_DEFAULT));
         LogoValidacion1.setIcon(logoValidacion1);
+        this.repaint();
+    }
+
+    public void actualizarIconoValidacion2(boolean validacion2) {
         if (validacion2) {
             this.logoValidacion2 = new ImageIcon("imagenes/Ok.png");
         } else {
@@ -288,6 +293,21 @@ public class VistaPrincipal extends javax.swing.JFrame {
         panel.setBackground(newColor);
     }
 
+    private ArrayList<String> obtenerListaColectivos() {
+        ArrayList<String> colectivos = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(archivoColectivo))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                colectivos.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return colectivos;
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -321,7 +341,6 @@ public class VistaPrincipal extends javax.swing.JFrame {
         PanelDerechoInferior = new javax.swing.JPanel();
         LblCantidadPasajeros = new javax.swing.JLabel();
         LblKilometraje = new javax.swing.JLabel();
-        SpinnerCantidadPasajeros = new javax.swing.JSpinner();
         TxtKilometraje = new javax.swing.JTextField();
         LogoValidacion1 = new javax.swing.JLabel();
         LogoValidacion2 = new javax.swing.JLabel();
@@ -330,6 +349,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
         RadioButtonChofer2 = new javax.swing.JRadioButton();
         RadioButtonChofer1 = new javax.swing.JRadioButton();
         jLabel1 = new javax.swing.JLabel();
+        TxtCantidadPasajeros = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -630,17 +650,11 @@ public class VistaPrincipal extends javax.swing.JFrame {
         LblKilometraje.setText("Kilometraje:");
         PanelDerechoInferior.add(LblKilometraje, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 70, 30));
 
-        SpinnerCantidadPasajeros.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                SpinnerCantidadPasajerosStateChanged(evt);
-            }
-        });
-        SpinnerCantidadPasajeros.addKeyListener(new java.awt.event.KeyAdapter() {
+        TxtKilometraje.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                SpinnerCantidadPasajerosKeyReleased(evt);
+                TxtKilometrajeKeyReleased(evt);
             }
         });
-        PanelDerechoInferior.add(SpinnerCantidadPasajeros, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 10, 240, 32));
         PanelDerechoInferior.add(TxtKilometraje, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 50, 240, 30));
         PanelDerechoInferior.add(LogoValidacion1, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 10, 30, 30));
         PanelDerechoInferior.add(LogoValidacion2, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 50, 30, 30));
@@ -697,6 +711,13 @@ public class VistaPrincipal extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Elegir chofer:");
         PanelDerechoInferior.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 130, 30));
+
+        TxtCantidadPasajeros.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                TxtCantidadPasajerosKeyReleased(evt);
+            }
+        });
+        PanelDerechoInferior.add(TxtCantidadPasajeros, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 10, 240, 30));
 
         PanelPrincipal.add(PanelDerechoInferior, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 310, 450, 290));
 
@@ -771,6 +792,40 @@ public class VistaPrincipal extends javax.swing.JFrame {
 
     private void BtnMaximoKmMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnMaximoKmMouseClicked
         // TODO add your handling code here:
+        ArrayList<String> colectivos = obtenerListaColectivos();
+
+        if (colectivos.isEmpty()) {
+            System.out.println("No se encontraron colectivos en el archivo.");
+            return;
+        }
+
+        int maxKm = Integer.MIN_VALUE;
+        int maxKmIndex = -1;
+
+        for (int i = 0; i < colectivos.size(); i++) {
+            String csvLineColectivo = colectivos.get(i);
+            Colectivo colectivo = new Colectivo();
+            colectivo = colectivo.obtenerColectivo(csvLineColectivo);
+
+            if (colectivo.getKilometraje() > maxKm) {
+                maxKm = colectivo.getKilometraje();
+                maxKmIndex = i;
+            }
+        }
+
+        if (maxKmIndex == -1) {
+            System.out.println("No se encontró un colectivo con el mayor kilometraje.");
+            return;
+        }
+
+        String csvLineChofer = getRow(archivoChoferes, maxKmIndex);
+        Chofer chofer = new Chofer();
+        chofer = chofer.obtenerChofer(csvLineChofer, colectivos.get(maxKmIndex));
+
+        String mensaje = "El colectivo con mayor kilometraje es el colectivo de " + chofer.getNombre() + " " + chofer.getApellido()
+                + " con un kilometraje de " + maxKm;
+
+        JOptionPane.showMessageDialog(this, mensaje, "Colectivo con Mayor Kilometraje", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_BtnMaximoKmMouseClicked
 
     private void BtnMaximoKmMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnMaximoKmMouseEntered
@@ -816,15 +871,24 @@ public class VistaPrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_RadioButtonChofer1ActionPerformed
 
-    private void SpinnerCantidadPasajerosStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_SpinnerCantidadPasajerosStateChanged
+    private void TxtCantidadPasajerosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtCantidadPasajerosKeyReleased
         // TODO add your handling code here:
-        System.out.println("hola");
-    }//GEN-LAST:event_SpinnerCantidadPasajerosStateChanged
+        actualizarIconoValidacion1(validar(TxtCantidadPasajeros));
+    }//GEN-LAST:event_TxtCantidadPasajerosKeyReleased
 
-    private void SpinnerCantidadPasajerosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SpinnerCantidadPasajerosKeyReleased
+    private void TxtKilometrajeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TxtKilometrajeKeyReleased
         // TODO add your handling code here:
-        
-    }//GEN-LAST:event_SpinnerCantidadPasajerosKeyReleased
+        actualizarIconoValidacion2(validar(TxtKilometraje));
+    }//GEN-LAST:event_TxtKilometrajeKeyReleased
+
+    public boolean validar(JTextField txt) {
+        try {
+            Integer cant = Integer.valueOf(txt.getText());
+            return cant > 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -900,7 +964,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
     private javax.swing.JPanel PanelSalir;
     private javax.swing.JRadioButton RadioButtonChofer1;
     private javax.swing.JRadioButton RadioButtonChofer2;
-    private javax.swing.JSpinner SpinnerCantidadPasajeros;
+    private javax.swing.JTextField TxtCantidadPasajeros;
     private javax.swing.JTextField TxtKilometraje;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
