@@ -4,6 +4,7 @@
  */
 package vistas;
 
+import entidades.Colectivo;
 import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -19,6 +20,11 @@ public class PanelColectivo extends javax.swing.JPanel {
      */
     public PanelColectivo() {
         initComponents();
+    }
+    
+    public PanelColectivo(Colectivo colectivo) {
+        initComponents();
+        System.out.println(colectivo);
     }
 
     /**

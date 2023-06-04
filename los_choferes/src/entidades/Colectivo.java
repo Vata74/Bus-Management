@@ -1,5 +1,7 @@
 package entidades;
 
+import java.util.Arrays;
+
 public class Colectivo {
     private int kilometraje;
     private int cantidadPasajeros;
@@ -67,6 +69,11 @@ public class Colectivo {
         }
     }
 
+    public Colectivo obtenerColectivo(String colectivo){
+        String[] colectivoClean = colectivo.split(",");
+        return new Colectivo(Integer.parseInt(colectivoClean[0]), Integer.parseInt(colectivoClean[1]), colectivoClean[2], colectivoClean[3]);
+    }
+    
     @Override
     public String toString() {
         return "Colectivo{" + "kilometraje=" + kilometraje + ", cantidadPasajeros=" + cantidadPasajeros + ", modelo=" + modelo + ", patente=" + patente + '}';

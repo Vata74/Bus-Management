@@ -5,6 +5,7 @@
 package main;
 
 import entidades.Chofer;
+import entidades.Colectivo;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Image;
@@ -42,7 +43,6 @@ public class VistaPrincipal extends javax.swing.JFrame {
 
     public VistaPrincipal() {
         initComponents();
-        mostrarInfoChofer();
         actualizarIconosMicros();
         actualizarIconosValidaciones(true, false);
         inicioPrimeraVez();
@@ -130,6 +130,24 @@ public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
         }
         return rowCount;
     }
+    
+    public static String getRow(String csvFile, int rowNumber) {
+        String line;
+        String row = null;
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            int lineNumber = 0;
+            while ((line = br.readLine()) != null) {
+                if (lineNumber == rowNumber) {
+                    row = line;
+                    break;
+                }
+                lineNumber++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return row;
+    }
 
     public void actualizarIconosValidaciones(boolean validacion1, boolean validacion2) {
         if (validacion1) {
@@ -161,8 +179,16 @@ public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
         this.repaint();
     }
 
-    public void mostrarInfoChofer() {
-        PanelChofer mostrarDataChofer = new PanelChofer();
+    public void mostrarInfoChofer(int i) {
+        
+        //Segun boton que toca el chofer a buscar
+        String csvLineChofer = getRow(archivoChoferes, i);
+        String csvLineColectivo = getRow(archivoColectivo, i);
+        Chofer chofer = new Chofer();
+        chofer = chofer.obtenerChofer(csvLineChofer, csvLineColectivo);
+
+        
+        PanelChofer mostrarDataChofer = new PanelChofer(chofer);
         mostrarDataChofer.setSize(950, 590);
         mostrarDataChofer.setLocation(0, 0);
 
@@ -597,7 +623,7 @@ public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
 
     private void BtnSelecChofer1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnSelecChofer1MouseClicked
         // TODO add your handling code here:
-        mostrarInfoChofer();
+        mostrarInfoChofer(0);
     }//GEN-LAST:event_BtnSelecChofer1MouseClicked
 
     private void BtnSelecChofer1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnSelecChofer1MouseEntered
@@ -617,7 +643,7 @@ public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
 
     private void BtnSelecChofer2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnSelecChofer2MouseClicked
         // TODO add your handling code here:
-        mostrarInfoChofer();
+        mostrarInfoChofer(1);
     }//GEN-LAST:event_BtnSelecChofer2MouseClicked
 
     private void BtnSelecChofer2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnSelecChofer2MouseEntered

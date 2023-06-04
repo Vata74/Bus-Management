@@ -4,6 +4,8 @@
  */
 package vistas;
 
+import entidades.Chofer;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -14,11 +16,17 @@ import javax.swing.SwingConstants;
  */
 public class PanelChofer extends javax.swing.JPanel {
 
-    /**
-     * Creates new form PanelChofer
-     */
+    Chofer chofer;
+    
     public PanelChofer() {
         initComponents();
+    }
+    
+    public PanelChofer(Chofer chofer){
+        initComponents();
+        this.chofer = chofer;
+        TxtNombreChofer.setText(chofer.getNombre());
+        TxtApellidoChofer.setText(chofer.getApellido());
     }
 
     /**
@@ -169,6 +177,14 @@ public class PanelChofer extends javax.swing.JPanel {
 
     private void BtnEditarColectivoChoferMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnEditarColectivoChoferMouseClicked
         // TODO add your handling code here:
+        PanelColectivo mostrarDataColectivo = new PanelColectivo(chofer.getColectivo());
+        mostrarDataColectivo.setSize(950, 590);
+        mostrarDataColectivo.setLocation(0, 0);
+
+        this.removeAll();
+        this.add(mostrarDataColectivo, BorderLayout.CENTER);
+        this.revalidate();
+        this.repaint();
     }//GEN-LAST:event_BtnEditarColectivoChoferMouseClicked
 
     private void BtnEditarColectivoChoferMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnEditarColectivoChoferMouseEntered
@@ -183,6 +199,7 @@ public class PanelChofer extends javax.swing.JPanel {
 
     private void BtnEditarChoferMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnEditarChoferMouseClicked
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_BtnEditarChoferMouseClicked
 
     private void BtnEditarChoferMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnEditarChoferMouseEntered
