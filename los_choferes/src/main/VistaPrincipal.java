@@ -53,22 +53,27 @@ public class VistaPrincipal extends javax.swing.JFrame {
     public void inicioPrimeraVez() {
         System.out.println(contarFilas(archivoColectivo));
 
-        if (contarFilas(archivoColectivo) < 2 && contarFilas(archivoChoferes) < 2) {
-            ChoferForm dialogChofer = new ChoferForm();
-            ColectivoForm dialogColectivo = new ColectivoForm();
+        if (contarFilas(archivoColectivo) < 1 && contarFilas(archivoChoferes) < 1) {
+            ChoferForm dialogChofer1 = new ChoferForm();
+            ColectivoForm dialogColectivo1 = new ColectivoForm();
 
-            Chofer chofer = dialogChofer.showDialog();
-            chofer.setColectivo(dialogColectivo.showDialog());
-            System.out.println(chofer.getColectivo());
+            Chofer chofer1 = dialogChofer1.showDialog();
+            Colectivo colectivo1 = dialogColectivo1.showDialog();
+            chofer1.setColectivo(colectivo1);
+            System.out.println(chofer1.getColectivo());
 
-            Chofer chofer1 = dialogChofer.showDialog(chofer.getNroSocio());
-            chofer1.setColectivo(dialogColectivo.showDialog(chofer.getColectivo().getPatente()));
-            System.out.println(chofer1);
+            ChoferForm dialogChofer2 = new ChoferForm();
+            ColectivoForm dialogColectivo2 = new ColectivoForm();
 
-            guardarDatos(chofer, chofer1);
+            Chofer chofer2 = dialogChofer2.showDialog(chofer1.getNroSocio());
+            Colectivo colectivo2 = dialogColectivo2.showDialog(chofer1.getColectivo().getPatente());
+            chofer2.setColectivo(colectivo2);
+            System.out.println(chofer2);
+
+            guardarDatos(chofer1, chofer2);
         }
 
-        if (contarFilas(archivoColectivo) != 2 && contarFilas(archivoChoferes) != 2) {
+        if (contarFilas(archivoColectivo) != 1 && contarFilas(archivoChoferes) != 1) {
             System.exit(0);
         }
     }
