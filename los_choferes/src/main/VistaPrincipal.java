@@ -810,17 +810,17 @@ public class VistaPrincipal extends javax.swing.JFrame {
             if (colectivo.getKilometraje() > maxKm) {
                 maxKm = colectivo.getKilometraje();
                 maxKmIndex = i;
-            }else if(maxKm == colectivo.getKilometraje()){
+            } else if (maxKm == colectivo.getKilometraje()) {
                 iguales = true;
             }
         }
-  
+
         if (maxKmIndex == -1) {
-        JOptionPane.showMessageDialog(this, "No se ha realizado ningun viaje", "Colectivo con Mayor Kilometraje", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No se ha realizado ningun viaje", "Colectivo con Mayor Kilometraje", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
         if (iguales) {
-        JOptionPane.showMessageDialog(this, "El kilometraje en ambos colectivos es el mismo", "Colectivo con Mayor Kilometraje", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "El kilometraje en ambos colectivos es el mismo", "Colectivo con Mayor Kilometraje", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
         String csvLineChofer = getRow(archivoChoferes, maxKmIndex);
@@ -861,71 +861,71 @@ public class VistaPrincipal extends javax.swing.JFrame {
 
     private void BtnRealizarViajeMouseClicked(java.awt.event.MouseEvent evt) {                                              
         // TODO add your handling code here:
-        
-    int choferIndex;
-    if (RadioButtonChofer1.isSelected()) {
-        choferIndex = 0;
-    } else if (RadioButtonChofer2.isSelected()) {
-        choferIndex = 1;
-    } else {
-        JOptionPane.showMessageDialog(this,"No se ha seleccionado ningun chofer.","Realizar Viaje", JOptionPane.INFORMATION_MESSAGE);
-        return;
-    }
 
-    ArrayList<String> lines = new ArrayList<>();
-    try (BufferedReader br = new BufferedReader(new FileReader(archivoColectivo))) {
-        String line;
-        while ((line = br.readLine()) != null) {
-            lines.add(line);
+        int choferIndex;
+        if (RadioButtonChofer1.isSelected()) {
+            choferIndex = 0;
+        } else if (RadioButtonChofer2.isSelected()) {
+            choferIndex = 1;
+        } else {
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningun chofer.", "Realizar Viaje", JOptionPane.INFORMATION_MESSAGE);
+            return;
         }
-    } catch (IOException e) {
-        e.printStackTrace();
-        return;
-    }
 
-    if (choferIndex >= lines.size()) {
-        System.out.println("Índice de chofer fuera de rango.");
-        return;
-    }
-
-    String lineaColectivo = lines.get(choferIndex);
-
-    Colectivo colectivo = new Colectivo();
-    colectivo = colectivo.obtenerColectivo(lineaColectivo);
-
-    if(TxtCantidadPasajeros.getText().equalsIgnoreCase("")){
-        JOptionPane.showMessageDialog(this,"Ingrese una cantidad de pasajeros.","Realizar Viaje", JOptionPane.INFORMATION_MESSAGE);
-        return;
-    }
-    if (!validar1(TxtCantidadPasajeros)) {
-        JOptionPane.showMessageDialog(this,"La cantidad de pasajeros no es válida","Realizar Viaje", JOptionPane.INFORMATION_MESSAGE);
-        return;
-    }
-    if (!validar(TxtKilometraje)) {
-        JOptionPane.showMessageDialog(this,"Ingrese una distancia válida.","Realizar Viaje", JOptionPane.INFORMATION_MESSAGE);
-        return;
-    }
-
-    int kilometrajeActual = colectivo.getKilometraje();
-    int kilometrajeViaje = Integer.parseInt(TxtKilometraje.getText());
-    colectivo.setKilometraje(kilometrajeActual + kilometrajeViaje);
-
-    String[] partesLinea = lineaColectivo.split(",");
-    partesLinea[0] = String.valueOf(colectivo.getKilometraje());
-    String lineaActualizada = String.join(",", partesLinea);
-    lines.set(choferIndex, lineaActualizada);
-
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivoColectivo))) {
-        for (String line : lines) {
-            writer.write(line);
-            writer.newLine();
+        ArrayList<String> lines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(archivoColectivo))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
         }
-    } catch (IOException e) {
-        e.printStackTrace();
-        return;
-    }
 
-    JOptionPane.showMessageDialog(this, "Viaje realizado con éxito.", "Realizar Viaje", JOptionPane.INFORMATION_MESSAGE);
+        if (choferIndex >= lines.size()) {
+            System.out.println("Índice de chofer fuera de rango.");
+            return;
+        }
+
+        String lineaColectivo = lines.get(choferIndex);
+
+        Colectivo colectivo = new Colectivo();
+        colectivo = colectivo.obtenerColectivo(lineaColectivo);
+
+        if (TxtCantidadPasajeros.getText().equalsIgnoreCase("")) {
+            JOptionPane.showMessageDialog(this, "Ingrese una cantidad de pasajeros.", "Realizar Viaje", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        if (!validar1(TxtCantidadPasajeros)) {
+            JOptionPane.showMessageDialog(this, "La cantidad de pasajeros no es válida", "Realizar Viaje", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+        if (!validar(TxtKilometraje)) {
+            JOptionPane.showMessageDialog(this, "Ingrese una distancia válida.", "Realizar Viaje", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        int kilometrajeActual = colectivo.getKilometraje();
+        int kilometrajeViaje = Integer.parseInt(TxtKilometraje.getText());
+        colectivo.setKilometraje(kilometrajeActual + kilometrajeViaje);
+
+        String[] partesLinea = lineaColectivo.split(",");
+        partesLinea[0] = String.valueOf(colectivo.getKilometraje());
+        String lineaActualizada = String.join(",", partesLinea);
+        lines.set(choferIndex, lineaActualizada);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivoColectivo))) {
+            for (String line : lines) {
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        JOptionPane.showMessageDialog(this, "Viaje realizado con éxito.", "Realizar Viaje", JOptionPane.INFORMATION_MESSAGE);
 
     }                                             
 
@@ -961,6 +961,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
             return false;
         }
     }
+
     public boolean validar1(JTextField txt) {
         try {
             Integer cant = Integer.valueOf(txt.getText());
@@ -969,6 +970,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
             return false;
         }
     }
+
     /**
      * @param args the command line arguments
      */
