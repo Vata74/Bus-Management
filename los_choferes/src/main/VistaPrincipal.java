@@ -799,9 +799,9 @@ public class VistaPrincipal extends javax.swing.JFrame {
             return;
         }
 
-        int maxKm = Integer.MIN_VALUE;
+        int maxKm = 0;
         int maxKmIndex = -1;
-
+        boolean iguales = false;
         for (int i = 0; i < colectivos.size(); i++) {
             String csvLineColectivo = colectivos.get(i);
             Colectivo colectivo = new Colectivo();
@@ -810,14 +810,15 @@ public class VistaPrincipal extends javax.swing.JFrame {
             if (colectivo.getKilometraje() > maxKm) {
                 maxKm = colectivo.getKilometraje();
                 maxKmIndex = i;
+            }else if (colectivo.getKilometraje()==maxKm) {
+                iguales = true;
             }
         }
-
-        if (maxKmIndex == -1) {
-            System.out.println("No se encontró un colectivo con el mayor kilometraje.");
-            return;
-        }
-
+        if (maxKm==0) {
+         JOptionPane.showMessageDialog(this,"No se ha realizado ningún viaje","Colectivo con Mayor Kilometraje", JOptionPane.INFORMATION_MESSAGE);
+        }else if (iguales==true) {
+            JOptionPane.showMessageDialog(this,"Los colectivos tienen el mismo kilometraje","Colectivo con Mayor Kilometraje", JOptionPane.INFORMATION_MESSAGE);
+        }else{
         String csvLineChofer = getRow(archivoChoferes, maxKmIndex);
         Chofer chofer = new Chofer();
         chofer = chofer.obtenerChofer(csvLineChofer, colectivos.get(maxKmIndex));
@@ -826,7 +827,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
                 + " con un kilometraje de " + maxKm;
 
         JOptionPane.showMessageDialog(this, mensaje, "Colectivo con Mayor Kilometraje", JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_BtnMaximoKmMouseClicked
+        }
 
     private void BtnMaximoKmMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnMaximoKmMouseEntered
         // TODO add your handling code here:
