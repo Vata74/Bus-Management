@@ -55,8 +55,10 @@ public class Chofer {
                 if (Integer.parseInt(nroSocio) != nroSocioVal) {
                     this.nroSocio = Integer.parseInt(nroSocio);
                 }else{
-                    this.nroSocio = Integer.parseInt(nroSocio);
+                    return null;
                 }
+            } else {
+                this.nroSocio = Integer.parseInt(nroSocio);
             }
             this.nombre = nombre;
             this.apellido = apellido;
@@ -66,13 +68,13 @@ public class Chofer {
         }
     }
 
-    public Chofer obtenerChofer(String lineaChofer, String lineaColectivo){
-        String[] lineas  = lineaChofer.split(",");
+    public Chofer obtenerChofer(String lineaChofer, String lineaColectivo) {
+        String[] lineas = lineaChofer.split(",");
         Colectivo colectivo = new Colectivo();
         colectivo = colectivo.obtenerColectivo(lineaColectivo);
-        return new Chofer(Integer.parseInt(lineas[0]), lineas[1],  lineas[2], colectivo);
+        return new Chofer(Integer.parseInt(lineas[0]), lineas[1], lineas[2], colectivo);
     }
-    
+
     @Override
     public String toString() {
         return "Chofer{" + "nroSocio=" + nroSocio + ", nombre=" + nombre + ", apellido=" + apellido + ", colectivo=" + colectivo + '}';

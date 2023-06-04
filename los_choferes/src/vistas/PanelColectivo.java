@@ -15,16 +15,18 @@ import javax.swing.SwingConstants;
  */
 public class PanelColectivo extends javax.swing.JPanel {
 
-    /**
-     * Creates new form PanelColectivo
-     */
+    Colectivo colectivo;
+            
     public PanelColectivo() {
         initComponents();
     }
     
     public PanelColectivo(Colectivo colectivo) {
         initComponents();
-        System.out.println(colectivo);
+        this.colectivo = colectivo;
+        SpinnerCantPasajeros.setValue(colectivo.getCantidadPasajeros());
+        TxtModelo.setText(colectivo.getModelo());
+        TxtPatente.setText(colectivo.getPatente());
     }
 
     /**

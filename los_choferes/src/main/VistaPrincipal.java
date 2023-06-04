@@ -9,12 +9,14 @@ import entidades.Colectivo;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.List;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -46,8 +48,17 @@ public class VistaPrincipal extends javax.swing.JFrame {
         actualizarIconosMicros();
         actualizarIconosValidaciones(true, false);
         inicioPrimeraVez();
+        
+        ButtonGroupChofer.add(RadioButtonChofer1);
+        ButtonGroupChofer.add(RadioButtonChofer2);
+        
+        iniciarComponentes();
 
         this.setLocationRelativeTo(null);
+    }
+    
+    public void iniciarComponentes(){
+        
     }
 
     public void inicioPrimeraVez() {
@@ -78,44 +89,78 @@ public class VistaPrincipal extends javax.swing.JFrame {
         }
     }
 
-    public void guardarDatos(Chofer chofer1, Chofer chofer2) {
-    ArrayList<String[]> choferesGuardar = new ArrayList<>();
-    ArrayList<String[]> colectivosGuardar = new ArrayList<>();
+    public void intercambio(String csvFile) {
+        ArrayList<String> lines = new ArrayList<>();
 
-    // Guardar choferes
-    String[] lineaChofer1 = {String.valueOf(chofer1.getNroSocio()), chofer1.getNombre(), chofer1.getApellido()};
-    String[] lineaChofer2 = {String.valueOf(chofer2.getNroSocio()), chofer2.getNombre(), chofer2.getApellido()};
-    choferesGuardar.add(lineaChofer1);
-    choferesGuardar.add(lineaChofer2);
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            String line;
 
-    // Guardar colectivos
-    String[] lineaColectivo1 = {String.valueOf(chofer1.getColectivo().getKilometraje()), String.valueOf(chofer1.getColectivo().getCantidadPasajeros()), chofer1.getColectivo().getModelo(), chofer1.getColectivo().getPatente()};
-    String[] lineaColectivo2 = {String.valueOf(chofer2.getColectivo().getKilometraje()), String.valueOf(chofer2.getColectivo().getCantidadPasajeros()), chofer2.getColectivo().getModelo(), chofer2.getColectivo().getPatente()};
-    colectivosGuardar.add(lineaColectivo1);
-    colectivosGuardar.add(lineaColectivo2);
-
-    guardarCSV(archivoColectivo, colectivosGuardar);
-    guardarCSV(archivoChoferes, choferesGuardar);
-}
-
-public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(rutaArchivo))) {
-        for (String[] fila : datos) {
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < fila.length; i++) {
-                sb.append(fila[i]);
-                if (i < fila.length - 1) {
-                    sb.append(",");
-                }
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
             }
-            writer.write(sb.toString());
-            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
         }
-        System.out.println("Archivo CSV guardado correctamente en: " + rutaArchivo);
-    } catch (IOException e) {
-        System.err.println("Error al guardar el archivo CSV: " + e.getMessage());
+
+        if (lines.size() < 2) {
+            System.out.println("El archivo CSV no tiene suficientes líneas.");
+            return;
+        }
+
+        String firstLine = lines.get(0);
+        lines.set(0, lines.get(1));
+        lines.set(1, firstLine);
+
+        try (FileWriter writer = new FileWriter(csvFile)) {
+            for (String line : lines) {
+                writer.write(line + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Las líneas se han intercambiado correctamente en el archivo CSV.");
     }
-}
+
+    public void guardarDatos(Chofer chofer1, Chofer chofer2) {
+        ArrayList<String[]> choferesGuardar = new ArrayList<>();
+        ArrayList<String[]> colectivosGuardar = new ArrayList<>();
+
+        // Guardar choferes
+        String[] lineaChofer1 = {String.valueOf(chofer1.getNroSocio()), chofer1.getNombre(), chofer1.getApellido()};
+        String[] lineaChofer2 = {String.valueOf(chofer2.getNroSocio()), chofer2.getNombre(), chofer2.getApellido()};
+        choferesGuardar.add(lineaChofer1);
+        choferesGuardar.add(lineaChofer2);
+
+        // Guardar colectivos
+        String[] lineaColectivo1 = {String.valueOf(chofer1.getColectivo().getKilometraje()), String.valueOf(chofer1.getColectivo().getCantidadPasajeros()), chofer1.getColectivo().getModelo(), chofer1.getColectivo().getPatente()};
+        String[] lineaColectivo2 = {String.valueOf(chofer2.getColectivo().getKilometraje()), String.valueOf(chofer2.getColectivo().getCantidadPasajeros()), chofer2.getColectivo().getModelo(), chofer2.getColectivo().getPatente()};
+        colectivosGuardar.add(lineaColectivo1);
+        colectivosGuardar.add(lineaColectivo2);
+
+        guardarCSV(archivoColectivo, colectivosGuardar);
+        guardarCSV(archivoChoferes, choferesGuardar);
+    }
+
+    public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(rutaArchivo))) {
+            for (String[] fila : datos) {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < fila.length; i++) {
+                    sb.append(fila[i]);
+                    if (i < fila.length - 1) {
+                        sb.append(",");
+                    }
+                }
+                writer.write(sb.toString());
+                writer.newLine();
+            }
+            System.out.println("Archivo CSV guardado correctamente en: " + rutaArchivo);
+        } catch (IOException e) {
+            System.err.println("Error al guardar el archivo CSV: " + e.getMessage());
+        }
+    }
 
     private static int contarFilas(String filename) {
         int rowCount = 0;
@@ -130,7 +175,7 @@ public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
         }
         return rowCount;
     }
-    
+
     public static String getRow(String csvFile, int rowNumber) {
         String line;
         String row = null;
@@ -179,15 +224,24 @@ public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
         this.repaint();
     }
 
+    public void intercambiarImagenes() {
+        Icon iconoBtn1 = BtnColectivoChofer1.getIcon();
+        Icon iconoBtn2 = BtnColectivoChofer2.getIcon();
+
+        BtnColectivoChofer1.setIcon(iconoBtn2);
+        BtnColectivoChofer2.setIcon(iconoBtn1);
+
+        repaint();
+    }
+
     public void mostrarInfoChofer(int i) {
-        
+
         //Segun boton que toca el chofer a buscar
         String csvLineChofer = getRow(archivoChoferes, i);
         String csvLineColectivo = getRow(archivoColectivo, i);
         Chofer chofer = new Chofer();
         chofer = chofer.obtenerChofer(csvLineChofer, csvLineColectivo);
 
-        
         PanelChofer mostrarDataChofer = new PanelChofer(chofer);
         mostrarDataChofer.setSize(950, 590);
         mostrarDataChofer.setLocation(0, 0);
@@ -198,8 +252,13 @@ public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
         PanelContenido.repaint();
     }
 
-    public void mostrarInfoColectivo() {
-        PanelColectivo mostrarDataColectivo = new PanelColectivo();
+    public void mostrarInfoColectivo(int i) {
+
+        String csvLineColectivo = getRow(archivoColectivo, i);
+        Colectivo colectivo = new Colectivo();
+        colectivo = colectivo.obtenerColectivo(csvLineColectivo);
+
+        PanelColectivo mostrarDataColectivo = new PanelColectivo(colectivo);
         mostrarDataColectivo.setSize(950, 590);
         mostrarDataColectivo.setLocation(0, 0);
 
@@ -236,6 +295,7 @@ public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        ButtonGroupChofer = new javax.swing.ButtonGroup();
         PanelPrincipal = new javax.swing.JPanel();
         PanelIzquierdo = new javax.swing.JPanel();
         LblTitulo = new javax.swing.JLabel("Los Choferes", SwingConstants.CENTER);
@@ -265,6 +325,9 @@ public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
         LogoValidacion2 = new javax.swing.JLabel();
         PanelBtnRealizarViaje = new javax.swing.JPanel();
         BtnRealizarViaje = new javax.swing.JLabel("Realizar Viaje", SwingConstants.CENTER);
+        RadioButtonChofer2 = new javax.swing.JRadioButton();
+        RadioButtonChofer1 = new javax.swing.JRadioButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -605,6 +668,23 @@ public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
 
         PanelDerechoInferior.add(PanelBtnRealizarViaje, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 430, 60));
 
+        RadioButtonChofer2.setForeground(new java.awt.Color(0, 0, 0));
+        RadioButtonChofer2.setText("Chofer 2");
+        PanelDerechoInferior.add(RadioButtonChofer2, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 91, -1, 30));
+
+        RadioButtonChofer1.setForeground(new java.awt.Color(0, 0, 0));
+        RadioButtonChofer1.setText("Chofer 1");
+        RadioButtonChofer1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RadioButtonChofer1ActionPerformed(evt);
+            }
+        });
+        PanelDerechoInferior.add(RadioButtonChofer1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 90, -1, 30));
+
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel1.setText("Elegir chofer:");
+        PanelDerechoInferior.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 130, 30));
+
         PanelPrincipal.add(PanelDerechoInferior, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 310, 450, 290));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -638,7 +718,7 @@ public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
 
     private void BtnColectivoChofer1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnColectivoChofer1MouseClicked
         // TODO add your handling code here:
-        mostrarInfoColectivo();
+        mostrarInfoColectivo(0);
     }//GEN-LAST:event_BtnColectivoChofer1MouseClicked
 
     private void BtnSelecChofer2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnSelecChofer2MouseClicked
@@ -658,11 +738,12 @@ public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
 
     private void BtnColectivoChofer2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnColectivoChofer2MouseClicked
         // TODO add your handling code here:
-        mostrarInfoColectivo();
+        mostrarInfoColectivo(1);
     }//GEN-LAST:event_BtnColectivoChofer2MouseClicked
 
     private void BtnIntercambiarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnIntercambiarMouseClicked
-
+        intercambio(archivoColectivo);
+        intercambiarImagenes();
     }//GEN-LAST:event_BtnIntercambiarMouseClicked
 
     private void BtnIntercambiarMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnIntercambiarMouseEntered
@@ -718,6 +799,10 @@ public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
         mouseExit(PanelBtnRealizarViaje);
     }//GEN-LAST:event_BtnRealizarViajeMouseExited
 
+    private void RadioButtonChofer1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RadioButtonChofer1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_RadioButtonChofer1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -732,16 +817,24 @@ public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(VistaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaPrincipal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(VistaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaPrincipal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(VistaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaPrincipal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(VistaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(VistaPrincipal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -762,6 +855,7 @@ public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
     private javax.swing.JLabel BtnSalir;
     private javax.swing.JLabel BtnSelecChofer1;
     private javax.swing.JLabel BtnSelecChofer2;
+    private javax.swing.ButtonGroup ButtonGroupChofer;
     private javax.swing.JLabel LblCantidadPasajeros;
     private javax.swing.JLabel LblInformacion;
     private javax.swing.JLabel LblKilometraje;
@@ -781,7 +875,10 @@ public static void guardarCSV(String rutaArchivo, ArrayList<String[]> datos) {
     private javax.swing.JPanel PanelIzquierdo;
     private javax.swing.JPanel PanelPrincipal;
     private javax.swing.JPanel PanelSalir;
+    private javax.swing.JRadioButton RadioButtonChofer1;
+    private javax.swing.JRadioButton RadioButtonChofer2;
     private javax.swing.JSpinner SpinnerCantidadPasajeros;
     private javax.swing.JTextField TxtKilometraje;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }
