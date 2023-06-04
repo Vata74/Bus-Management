@@ -855,6 +855,65 @@ public class VistaPrincipal extends javax.swing.JFrame {
 
     private void BtnRealizarViajeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnRealizarViajeMouseClicked
         // TODO add your handling code here:
+        
+    int choferIndex;
+    if (RadioButtonChofer1.isSelected()) {
+        choferIndex = 0;
+    } else if (RadioButtonChofer2.isSelected()) {
+        choferIndex = 1;
+    } else {
+        System.out.println("No se ha seleccionado un chofer.");
+        return;
+    }
+
+    ArrayList<String> lines = new ArrayList<>();
+    try (BufferedReader br = new BufferedReader(new FileReader(archivoColectivo))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            lines.add(line);
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+        return;
+    }
+
+    if (choferIndex >= lines.size()) {
+        System.out.println("Índice de chofer fuera de rango.");
+        return;
+    }
+
+    String lineaColectivo = lines.get(choferIndex);
+
+    Colectivo colectivo = new Colectivo();
+    colectivo = colectivo.obtenerColectivo(lineaColectivo);
+
+    int cantidadPasajeros = Integer.parseInt(TxtCantidadPasajeros.getText());
+    if (cantidadPasajeros > colectivo.getCantidadPasajeros()) {
+        JOptionPane.showMessageDialog(this,"La cantidad de pasajeros excede la capacidad del colectivo.","Realizar Viaje", JOptionPane.INFORMATION_MESSAGE);
+        return;
+    }
+
+    int kilometrajeActual = colectivo.getKilometraje();
+    int kilometrajeViaje = Integer.parseInt(TxtKilometraje.getText());
+    colectivo.setKilometraje(kilometrajeActual + kilometrajeViaje);
+
+    String[] partesLinea = lineaColectivo.split(",");
+    partesLinea[0] = String.valueOf(colectivo.getKilometraje());
+    String lineaActualizada = String.join(",", partesLinea);
+    lines.set(choferIndex, lineaActualizada);
+
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivoColectivo))) {
+        for (String line : lines) {
+            writer.write(line);
+            writer.newLine();
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+        return;
+    }
+
+    JOptionPane.showMessageDialog(this, "Viaje realizado con éxito.", "Realizar Viaje", JOptionPane.INFORMATION_MESSAGE);
+
     }//GEN-LAST:event_BtnRealizarViajeMouseClicked
 
     private void BtnRealizarViajeMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnRealizarViajeMouseEntered
