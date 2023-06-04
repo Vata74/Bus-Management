@@ -828,7 +828,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
 
         JOptionPane.showMessageDialog(this, mensaje, "Colectivo con Mayor Kilometraje", JOptionPane.INFORMATION_MESSAGE);
         }
-
+    }
     private void BtnMaximoKmMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnMaximoKmMouseEntered
         // TODO add your handling code here:
         mouseEnter(PanelBtnMaximoKm);
