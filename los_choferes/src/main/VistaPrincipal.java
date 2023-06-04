@@ -839,7 +839,7 @@ public class VistaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_BtnMaximoKmMouseExited
 
     private void BtnSalirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BtnSalirMouseClicked
-        // TODO add your handling code here:
+        System.exit(0);
 
     }//GEN-LAST:event_BtnSalirMouseClicked
 
