@@ -45,8 +45,6 @@ public class VistaPrincipal extends javax.swing.JFrame {
 
     public VistaPrincipal() {
         initComponents();
-        actualizarIconosMicros();
-        actualizarIconosValidaciones(true, false);
         inicioPrimeraVez();
         
         ButtonGroupChofer.add(RadioButtonChofer1);
@@ -58,7 +56,11 @@ public class VistaPrincipal extends javax.swing.JFrame {
     }
     
     public void iniciarComponentes(){
-        
+        actualizarIconosMicros();
+        BtnSelecChofer1.setText(getRow(archivoChoferes, 0).split(",")[1]);
+        BtnSelecChofer2.setText(getRow(archivoChoferes, 1).split(",")[1]);
+        RadioButtonChofer1.setText(getRow(archivoChoferes, 0).split(",")[1]);
+        RadioButtonChofer2.setText(getRow(archivoChoferes, 1).split(",")[1]);
     }
 
     public void inicioPrimeraVez() {
@@ -627,6 +629,17 @@ public class VistaPrincipal extends javax.swing.JFrame {
         LblKilometraje.setForeground(new java.awt.Color(0, 0, 0));
         LblKilometraje.setText("Kilometraje:");
         PanelDerechoInferior.add(LblKilometraje, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, 70, 30));
+
+        SpinnerCantidadPasajeros.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                SpinnerCantidadPasajerosStateChanged(evt);
+            }
+        });
+        SpinnerCantidadPasajeros.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                SpinnerCantidadPasajerosKeyReleased(evt);
+            }
+        });
         PanelDerechoInferior.add(SpinnerCantidadPasajeros, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 10, 240, 32));
         PanelDerechoInferior.add(TxtKilometraje, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 50, 240, 30));
         PanelDerechoInferior.add(LogoValidacion1, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 10, 30, 30));
@@ -802,6 +815,16 @@ public class VistaPrincipal extends javax.swing.JFrame {
     private void RadioButtonChofer1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RadioButtonChofer1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_RadioButtonChofer1ActionPerformed
+
+    private void SpinnerCantidadPasajerosStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_SpinnerCantidadPasajerosStateChanged
+        // TODO add your handling code here:
+        System.out.println("hola");
+    }//GEN-LAST:event_SpinnerCantidadPasajerosStateChanged
+
+    private void SpinnerCantidadPasajerosKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SpinnerCantidadPasajerosKeyReleased
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_SpinnerCantidadPasajerosKeyReleased
 
     /**
      * @param args the command line arguments
